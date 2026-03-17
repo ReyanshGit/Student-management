@@ -9,29 +9,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Sab students lao
 func GetAllStudents(c *gin.Context) {
 
-	// Page aur limit URL se lo
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "10")
+	search := c.DefaultQuery("search", "")
+	course := c.DefaultQuery("course", "")
+	sort := c.DefaultQuery("sort", "created_at")
 
-	// String to number
 	pageInt, _ := strconv.Atoi(page)
 	limitInt, _ := strconv.Atoi(limit)
-
-	// Offset calculate karo
 	offset := (pageInt - 1) * limitInt
 
-	// Total count lo
+	// Query banao
+	query := config.DB.Model(&models.Student{})
+
+	
+	// Search — naam mein dhundho ← Yeh add karo
+	if search != "" {
+		query = query.Where("name LIKE ?", "%"+search+"%")
+	}
+	// Filter by course ← Line 2 add karo
+	if course != "" {
+		query = query.Where("course = ?", course)
+	}
+	// Total count
 	var total int64
-	config.DB.Model(&models.Student{}).Count(&total)
+	query.Count(&total)
 
 	// Students lo
 	var students []models.Student
-	config.DB.Limit(limitInt).Offset(offset).Find(&students)
+	query.Order(sort).Limit(limitInt).Offset(offset).Find(&students)
 
-	// Total pages
 	totalPages := (int(total) + limitInt - 1) / limitInt
 
 	c.JSON(http.StatusOK, gin.H{
