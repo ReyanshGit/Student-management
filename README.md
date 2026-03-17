@@ -59,6 +59,35 @@ go run main.go
 | PUT | /api/students/:id | Student update karo |
 | DELETE | /api/students/:id | Student delete karo |
 
+## Advanced Features
+
+### Query Parameters
+| Parameter | Type   | Description          | Example        |
+|-----------|--------|----------------------|----------------|
+| page      | number | Page number          | ?page=1        |
+| limit     | number | Students per page    | ?limit=10      |
+| search    | string | Search by name       | ?search=Kumar  |
+| course    | string | Filter by course     | ?course=python |
+| sort      | string | Sort by field        | ?sort=name     |
+
+### Examples
+```
+# Pagination
+GET /api/students?page=1&limit=10
+
+# Search
+GET /api/students?search=Kumar
+
+# Filter
+GET /api/students?course=python
+
+# Sort A-Z
+GET /api/students?sort=name
+
+# Sab saath mein
+GET /api/students?search=Kumar&course=Golang&sort=name&page=1&limit=3
+```
+
 ## Author
 **Rupendra Kumar** — Golang Backend Developer
 GitHub: [ReyanshGit](https://github.com/ReyanshGit)
